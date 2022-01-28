@@ -37,6 +37,7 @@ func (c *pollingController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("hello from lighthouse poller\n"))
 }
 
+// NewPollingController new polling controller
 func NewPollingController(repositoryNames []string, gitServer string, scmClient *scm.Client, contextMatchPatternCompiled *regexp.Regexp, requireReleaseSuccess bool, fb filebrowser.Interface, notifier func(webhook *scm.WebhookWrapper) error) (*pollingController, error) {
 	logger := logrus.NewEntry(logrus.StandardLogger())
 	if gitServer == "" {
