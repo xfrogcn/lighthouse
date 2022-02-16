@@ -1,6 +1,7 @@
 package inrepo
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/jenkins-x/lighthouse/pkg/filebrowser"
@@ -44,6 +45,15 @@ func ParseGitURI(text string) (*GitURI, error) {
 		path = parts[2]
 	}
 	owner := parts[0]
+	// 当存在多级分组的情况，如gitlab，通过.git后缀，来获取仓库名
+	if strings.Contains(path, ".git") {
+		paths := strings.Split(path, ".git")
+		if len(paths) != 2 {
+			return nil, errors.New("invalid format")
+		}
+		path = strings.TrimPrefix(paths[1], "/")
+		parts[1] = fmt.Sprintf("%s/%s", parts[1], strings.TrimSuffix(paths[0], ".git"))
+	}
 
 	server := filebrowser.GitHub
 	serverOwner := strings.SplitN(owner, ":", 2)
